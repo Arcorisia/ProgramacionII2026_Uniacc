@@ -46,19 +46,23 @@ public class MovementCharacter : MonoBehaviour
         }
 
         // Prebuffer: registra intención de salto
-        if (Input.GetButtonDown("Jump") && !jumping)
+        if (Input.GetButtonDown("Jump"))
         {
             prebuffTimeCounter = prebuffTime;
         }               
       
-        if (IsGrounded() && jumping)        
+        if (IsGrounded() && jumping && rb.linearVelocityY < 0)        
         {
             coyoteTimeCounter = 0; 
             jumping = false;            
         }
-        if(!IsGrounded() && !jumping)
+        if(!IsGrounded() && !jumping && coyoteTimeCounter <= 0)
         {
             coyoteTimeCounter = coyoteTime; // ✅ Inicia contador de coyote time
+        }
+        if(coyoteTimeCounter > 0)
+        {
+            coyoteTimeCounter -= Time.deltaTime; // ✅ Decrementa coyote time
         }
        
 
@@ -72,9 +76,9 @@ public class MovementCharacter : MonoBehaviour
 
     public void Jump()
     {
+        jumping = true;
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0); // ✅ Resetea velocidad vertical
         rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-        jumping = true;
         coyoteTimeCounter = 0;  // ✅ Evita doble salto
         prebuffTimeCounter = 0;
     }
