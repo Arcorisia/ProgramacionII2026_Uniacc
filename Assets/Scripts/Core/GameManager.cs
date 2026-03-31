@@ -3,6 +3,8 @@ using TMPro;
 
 public class GameManager : MonoBehaviour
 {
+    
+    public SubtoneBarManager subtoneBar;
     public static GameManager instance;
     public int coinCount = 0;
     public TextMeshProUGUI coinText;
@@ -18,6 +20,14 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
+
+    public void AddCoins(int amount)
+        {
+            coinCount += amount;
+
+            subtoneBar.OnCoinsChanged(coinCount);
+        }
     void Start()
     {
         coinText.text = "x" + coinCount;
