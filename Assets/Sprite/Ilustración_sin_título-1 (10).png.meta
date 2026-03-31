@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: f5bd324da41a02343addf92e320b0d4e
+guid: b598f99d46038fa4ba38f4faa4b5691c
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2710995021046557471
-    second: PLAYER2D-BODY3_0
+      213: 9005108350822778389
+    second: "Ilustracio\u0301n_sin_ti\u0301tulo-1 (10)_0"
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -46,13 +46,13 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
-  alignment: 9
-  spritePivot: {x: 0.39731163, y: 0.27698267}
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
-  spriteBorder: {x: 113, y: 120, z: 337, w: 434}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
@@ -100,23 +100,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: PLAYER2D-BODY3_0
+      name: "Ilustracio\u0301n_sin_ti\u0301tulo-1 (10)_0"
       rect:
         serializedVersion: 2
-        x: 116
-        y: 129
-        width: 126
-        height: 69
+        x: 0
+        y: 0
+        width: 1540
+        height: 1260
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 1e4daae446c906ad0800000000000000
-      internalID: -2710995021046557471
+      spriteID: 51602be755298fc70800000000000000
+      internalID: 9005108350822778389
       vertices: []
       indices: 
       edges: []
@@ -125,8 +125,8 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
-    internalID: 1537655665
+    spriteID: 
+    internalID: 0
     vertices: []
     indices: 
     edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      PLAYER2D-BODY3_0: -2710995021046557471
+      "Ilustracio\u0301n_sin_ti\u0301tulo-1 (10)_0": 9005108350822778389
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

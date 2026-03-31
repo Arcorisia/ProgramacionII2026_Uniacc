@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: f5bd324da41a02343addf92e320b0d4e
+guid: aad249e304c987140b79c966c2738223
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2710995021046557471
-    second: PLAYER2D-BODY3_0
+      213: 7236309323111367633
+    second: "Ilustracio\u0301n_sin_ti\u0301tulo-5_0"
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -50,9 +50,9 @@ TextureImporter:
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 9
-  spritePivot: {x: 0.39731163, y: 0.27698267}
+  spritePivot: {x: 0.50000006, y: 0.71694523}
   spritePixelsToUnits: 100
-  spriteBorder: {x: 113, y: 120, z: 337, w: 434}
+  spriteBorder: {x: 563, y: 813, z: 545, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: PLAYER2D-BODY3_0
+      name: "Ilustracio\u0301n_sin_ti\u0301tulo-5_0"
       rect:
         serializedVersion: 2
-        x: 116
-        y: 129
-        width: 126
-        height: 69
+        x: 573
+        y: 855
+        width: 397
+        height: 404
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 1e4daae446c906ad0800000000000000
-      internalID: -2710995021046557471
+      spriteID: 1d386e06df88c6460800000000000000
+      internalID: 7236309323111367633
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      PLAYER2D-BODY3_0: -2710995021046557471
+      "Ilustracio\u0301n_sin_ti\u0301tulo-5_0": 7236309323111367633
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

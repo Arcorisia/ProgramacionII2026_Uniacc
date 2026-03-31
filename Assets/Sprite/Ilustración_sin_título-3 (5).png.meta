@@ -1,10 +1,13 @@
 fileFormatVersion: 2
-guid: f5bd324da41a02343addf92e320b0d4e
+guid: 03bc400b23916ab4ca12a8f5c7718442
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2710995021046557471
-    second: PLAYER2D-BODY3_0
+      213: 4814760077377780192
+    second: "Ilustracio\u0301n_sin_ti\u0301tulo-3 (5)_0"
+  - first:
+      213: 1878307391148986335
+    second: "Ilustracio\u0301n_sin_ti\u0301tulo-3 (5)_1"
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +40,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -49,10 +52,10 @@ TextureImporter:
   spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
-  alignment: 9
-  spritePivot: {x: 0.39731163, y: 0.27698267}
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
-  spriteBorder: {x: 113, y: 120, z: 337, w: 434}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
@@ -100,23 +103,45 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: PLAYER2D-BODY3_0
+      name: "Ilustracio\u0301n_sin_ti\u0301tulo-3 (5)_0"
       rect:
         serializedVersion: 2
-        x: 116
-        y: 129
-        width: 126
-        height: 69
+        x: 454
+        y: 806
+        width: 51
+        height: 52
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 1e4daae446c906ad0800000000000000
-      internalID: -2710995021046557471
+      spriteID: 0e9b5dad7c671d240800000000000000
+      internalID: 4814760077377780192
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Ilustracio\u0301n_sin_ti\u0301tulo-3 (5)_1"
+      rect:
+        serializedVersion: 2
+        x: 476
+        y: 0
+        width: 1035
+        height: 1159
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fdf0d6cde96111a10800000000000000
+      internalID: 1878307391148986335
       vertices: []
       indices: 
       edges: []
@@ -126,7 +151,7 @@ TextureImporter:
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
-    internalID: 1537655665
+    internalID: 0
     vertices: []
     indices: 
     edges: []
@@ -135,7 +160,8 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      PLAYER2D-BODY3_0: -2710995021046557471
+      "Ilustracio\u0301n_sin_ti\u0301tulo-3 (5)_0": 4814760077377780192
+      "Ilustracio\u0301n_sin_ti\u0301tulo-3 (5)_1": 1878307391148986335
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
