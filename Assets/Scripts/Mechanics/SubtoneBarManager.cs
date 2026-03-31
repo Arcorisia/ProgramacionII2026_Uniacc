@@ -1,79 +1,186 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using TMPro;
 
 public class SubtoneBarManager : MonoBehaviour
 {
     [Header("Referencia UI")]
-    public Image barraImagen;
+    public Image targetImage;
 
-    [Header("Configuración Subtonos")]
+    [Header("Texto de Estado")]
+    public TextMeshProUGUI subtoneText;
+
+    [Header("Game Manager")]
+    public GameManager gameManager;
+
+    [Header("Configuración")]
     [Range(-12, 12)]
-    public int subtonoActual = 0;
+    public int currentSubtone = 0;
 
-    public float tiempoCambio = 4f;
+    public float stepTime = 4f;
 
-    [Header("Debug")]
-    public bool autoStart = true;
+    [Header("Animación Texto")]
+    public float popScale = 1.2f;
+    public float animDuration = 0.25f;
 
-    Coroutine rutina;
+    private int lastCoinCount;
+    private Coroutine textAnimCoroutine;
 
     void Start()
     {
-        AplicarSubtono();
-
-        if (autoStart)
-            rutina = StartCoroutine(BucleSubtono());
+        lastCoinCount = gameManager.coinCount;
+        StartCoroutine(AutoDecrease());
+        UpdateVisuals(true);
     }
 
-    IEnumerator BucleSubtono()
+    void Update()
+    {
+        if (gameManager.coinCount > lastCoinCount)
+        {
+            int difference = gameManager.coinCount - lastCoinCount;
+            IncreaseSubtone(difference);
+        }
+
+        lastCoinCount = gameManager.coinCount;
+    }
+
+    IEnumerator AutoDecrease()
     {
         while (true)
         {
-            yield return new WaitForSeconds(tiempoCambio);
+            yield return new WaitForSeconds(stepTime);
 
-            int descenso = Random.Range(1, 4); // 1,2,3
-            CambiarSubtono(-descenso);
+            currentSubtone -= 1;
+            currentSubtone = Mathf.Clamp(currentSubtone, -12, 12);
+
+            UpdateVisuals(false);
         }
     }
 
-    // 🔻 CAMBIO CENTRAL
-    public void CambiarSubtono(int delta)
+    public void IncreaseSubtone(int amount)
     {
-        subtonoActual += delta;
-        subtonoActual = Mathf.Clamp(subtonoActual, -12, 12);
+        currentSubtone += amount;
+        currentSubtone = Mathf.Clamp(currentSubtone, -12, 12);
 
-        AplicarSubtono();
+        UpdateVisuals(false);
     }
 
-    // 🎨 APLICACIÓN VISUAL
-    void AplicarSubtono()
+    void UpdateVisuals(bool instant)
     {
-        float t = (subtonoActual + 12f) / 24f;
-
-        // Separación conceptual:
-        float intensidadBlanca = Mathf.Clamp01((t - 0.5f) * 2f); 
-        float saturacionGris = Mathf.Clamp01((0.5f - t) * 2f);
-
-        // 🎯 Resultado final:
-        Color colorBase = Color.white;
-
-        // Gris (lado negativo)
-        Color gris = Color.gray;
-        colorBase = Color.Lerp(colorBase, gris, saturacionGris);
-
-        // Intensidad (lado positivo)
-        colorBase *= (1f + intensidadBlanca);
-
-        barraImagen.color = colorBase;
+        UpdateColor();
+        UpdateText(instant);
     }
 
-    // 🪙 EVENTO DESDE GAME MANAGER
-    public void OnCoinsChanged(int coinCount)
+    // 🎨 COLOR
+    void UpdateColor()
     {
-        if (coinCount % 2 == 0)
+        float t;
+        Color baseColor = Color.white;
+
+        if (currentSubtone > 0)
         {
-            CambiarSubtono(+1);
+            t = currentSubtone / 12f;
+            targetImage.color = Color.Lerp(baseColor, Color.green, t);
+        }
+        else if (currentSubtone < 0)
+        {
+            t = Mathf.Abs(currentSubtone) / 12f;
+            targetImage.color = Color.Lerp(baseColor, Color.red, t);
+        }
+        else
+        {
+            targetImage.color = baseColor;
+        }
+    }
+
+    // 🔤 TEXTO
+    void UpdateText(bool instant)
+    {
+        if (subtoneText == null) return;
+
+        subtoneText.text = GetSubtoneLabel(currentSubtone);
+
+        if (textAnimCoroutine != null)
+            StopCoroutine(textAnimCoroutine);
+
+        if (instant)
+        {
+            subtoneText.alpha = 1f;
+            subtoneText.transform.localScale = Vector3.one;
+        }
+        else
+        {
+            textAnimCoroutine = StartCoroutine(TextPopAnimation());
+        }
+    }
+
+    IEnumerator TextPopAnimation()
+    {
+        float time = 0f;
+
+        Vector3 startScale = Vector3.one * popScale;
+        Vector3 endScale = Vector3.one;
+
+        subtoneText.transform.localScale = startScale;
+        subtoneText.alpha = 0f;
+
+        while (time < animDuration)
+        {
+            time += Time.deltaTime;
+            float t = time / animDuration;
+
+            // Fade
+            subtoneText.alpha = Mathf.Lerp(0f, 1f, t);
+
+            // Scale (pop)
+            subtoneText.transform.localScale = Vector3.Lerp(startScale, endScale, t);
+
+            yield return null;
+        }
+
+        subtoneText.alpha = 1f;
+        subtoneText.transform.localScale = endScale;
+    }
+
+    // 🧠 MAPEO DE TEXTO
+    string GetSubtoneLabel(int value)
+    {
+        switch (value)
+        {
+            case -12: return "Extinción";
+            case -11: return "Catástrofe";
+            case -10: return "Fatal";
+            case -9: return "Devastación";
+            case -8: return "Tragedia";
+            case -7: return "Colapso";
+            case -6: return "Trágico";
+
+            case -5:
+            case -4:
+            case -3: return "Peligroso";
+
+            case -2:
+            case -1: return "Infortunio";
+
+            case 0: return "Neutralidad";
+
+            case 1: return "Esperanzador";
+            case 2: return "Estabilidad";
+            case 3: return "Serenidad";
+            case 4: return "Bienvivir";
+            case 5: return "Prosperidad";
+            case 6: return "Utopía";
+            case 7: return "Majestuosidad";
+            case 8: return "El mejor mundo posible";
+
+            case 9: return "Ascenso";
+
+            case 10: return "Fungitopía";
+            case 11: return "Miceliotopía";
+            case 12: return "La perfección";
+
+            default: return "";
         }
     }
 }

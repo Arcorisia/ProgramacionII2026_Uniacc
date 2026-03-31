@@ -4,6 +4,7 @@ public class MovementCharacter : MonoBehaviour
 {
     public Rigidbody2D rb;
     public float speed = 5f;    
+    public float runSpeed = 8f; // 🔹 Nueva velocidad al correr
     public float jumpForce = 5f;
     public Transform groundCheck;
     public float groundCheckRadius = 0.2f;
@@ -21,11 +22,17 @@ public class MovementCharacter : MonoBehaviour
         originalGravityScale = rb.gravityScale;
     }
 
-    // Update is called once per frame
     void Update()
     {
         float xInput = Input.GetAxis("Horizontal");
-        rb.linearVelocity = new Vector2(xInput * speed, rb.linearVelocity.y);
+
+        // 🔹 Detectar si está corriendo (Shift + Grounded)
+        bool isRunning = Input.GetKey(KeyCode.LeftShift) && IsGrounded();
+
+        // 🔹 Elegir velocidad
+        float currentSpeed = isRunning ? runSpeed : speed;
+
+        rb.linearVelocity = new Vector2(xInput * currentSpeed, rb.linearVelocity.y);
 
         if(rb.linearVelocityY < 0)
         {
@@ -45,7 +52,6 @@ public class MovementCharacter : MonoBehaviour
             prebuffTimeCounter -= Time.deltaTime;
         }
 
-        // Prebuffer: registra intención de salto
         if (Input.GetButtonDown("Jump"))
         {
             prebuffTimeCounter = prebuffTime;
@@ -58,17 +64,15 @@ public class MovementCharacter : MonoBehaviour
         }
         if(!IsGrounded() && !jumping && coyoteTimeCounter <= 0)
         {
-            coyoteTimeCounter = coyoteTime; // ✅ Inicia contador de coyote time
+            coyoteTimeCounter = coyoteTime;
         }
         if(coyoteTimeCounter > 0)
         {
-            coyoteTimeCounter -= Time.deltaTime; // ✅ Decrementa coyote time
+            coyoteTimeCounter -= Time.deltaTime;
         }
-       
 
-        // Salto: prebuffer + coyote time combinados
-        if (prebuffTimeCounter > 0 && !jumping && IsGrounded() || coyoteTimeCounter > 0 
-        && !jumping && Input.GetButtonDown("Jump"))
+        if (prebuffTimeCounter > 0 && !jumping && IsGrounded() || 
+            coyoteTimeCounter > 0 && !jumping && Input.GetButtonDown("Jump"))
         {
            Jump();
         }
@@ -77,17 +81,18 @@ public class MovementCharacter : MonoBehaviour
     public void Jump()
     {
         jumping = true;
-        rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0); // ✅ Resetea velocidad vertical
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0);
         rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-        coyoteTimeCounter = 0;  // ✅ Evita doble salto
+        coyoteTimeCounter = 0;
         prebuffTimeCounter = 0;
     }
+
     public bool IsGrounded()
     {
-        
         return Physics2D.OverlapCircle(groundCheck.position, 
         groundCheckRadius, LayerMask.GetMask("Ground"));
     }
+
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
