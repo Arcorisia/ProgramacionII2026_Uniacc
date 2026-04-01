@@ -5484,6 +5484,7 @@ MonoBehaviour:
   attackSpeed: 6
   minAttackDelay: 2
   maxAttackDelay: 5
+  respawnTime: 10
 --- !u!70 &762568794
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -7248,6 +7249,7 @@ MonoBehaviour:
   attackSpeed: 6
   minAttackDelay: 2
   maxAttackDelay: 5
+  respawnTime: 10
 --- !u!70 &910595041
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -7943,6 +7945,7 @@ MonoBehaviour:
   attackSpeed: 6
   minAttackDelay: 2
   maxAttackDelay: 5
+  respawnTime: 10
 --- !u!70 &981412946
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -9220,6 +9223,7 @@ MonoBehaviour:
   attackSpeed: 6
   minAttackDelay: 2
   maxAttackDelay: 5
+  respawnTime: 10
 --- !u!70 &1119403012
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -11639,6 +11643,7 @@ MonoBehaviour:
   attackSpeed: 6
   minAttackDelay: 2
   maxAttackDelay: 5
+  respawnTime: 10
 --- !u!70 &1402961462
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
