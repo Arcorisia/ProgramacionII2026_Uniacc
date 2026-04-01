@@ -16,12 +16,16 @@ public class EnemyBird : MonoBehaviour
     [Header("Respawn")]
     public float respawnTime = 3f;
 
+    [Header("Límite de distancia")]
+    public float maxDistanceFromStart = 8f;
+
     private Vector3 startPosition;
     private Transform player;
 
     private bool playerInRange = false;
     private bool isAttacking = false;
     private bool isRespawning = false;
+    private bool isReturning = false;
 
     private float attackTimer;
     private float randomAttackTime;
@@ -41,6 +45,19 @@ public class EnemyBird : MonoBehaviour
     void Update()
     {
         if (isRespawning) return;
+
+        // 🔴 Si se aleja demasiado → volver
+        float distance = Vector2.Distance(transform.position, startPosition);
+        if (distance > maxDistanceFromStart && !isReturning)
+        {
+            StartReturn();
+        }
+
+        if (isReturning)
+        {
+            ReturnToStart();
+            return;
+        }
 
         if (isAttacking)
         {
@@ -92,6 +109,31 @@ public class EnemyBird : MonoBehaviour
         );
     }
 
+    void StartReturn()
+    {
+        isReturning = true;
+        isAttacking = false;
+    }
+
+    void ReturnToStart()
+    {
+        transform.position = Vector2.MoveTowards(
+            transform.position,
+            startPosition,
+            attackSpeed * Time.deltaTime
+        );
+
+        if (Vector2.Distance(transform.position, startPosition) < 0.1f)
+        {
+            isReturning = false;
+
+            if (playerInRange)
+            {
+                ResetAttackTimer();
+            }
+        }
+    }
+
     void SetRandomAttackTime()
     {
         randomAttackTime = Random.Range(minAttackDelay, maxAttackDelay);
@@ -134,25 +176,22 @@ public class EnemyBird : MonoBehaviour
     {
         isRespawning = true;
         isAttacking = false;
+        isReturning = false;
 
-        // Desactivar visual y colisiones
         spriteRenderer.enabled = false;
         foreach (var col in colliders)
             col.enabled = false;
 
         yield return new WaitForSeconds(respawnTime);
 
-        // Volver al punto de origen
         transform.position = startPosition;
 
-        // Reactivar
         spriteRenderer.enabled = true;
         foreach (var col in colliders)
             col.enabled = true;
 
         isRespawning = false;
 
-        // Si el player sigue en rango, reinicia el ciclo
         if (playerInRange)
         {
             ResetAttackTimer();

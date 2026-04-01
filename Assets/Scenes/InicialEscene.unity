@@ -5483,8 +5483,9 @@ MonoBehaviour:
   zigzagFrequency: 1
   attackSpeed: 6
   minAttackDelay: 2
-  maxAttackDelay: 5
+  maxAttackDelay: 7
   respawnTime: 10
+  maxDistanceFromStart: 20
 --- !u!70 &762568794
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -5590,7 +5591,7 @@ Transform:
   m_GameObject: {fileID: 762568790}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 166.8, y: 14.4, z: 0}
+  m_LocalPosition: {x: 122.4, y: 14.4, z: 0}
   m_LocalScale: {x: 2.7265627, y: 2.7265627, z: 2.7265627}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7248,8 +7249,9 @@ MonoBehaviour:
   zigzagFrequency: 1
   attackSpeed: 6
   minAttackDelay: 2
-  maxAttackDelay: 5
+  maxAttackDelay: 7
   respawnTime: 10
+  maxDistanceFromStart: 20
 --- !u!70 &910595041
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -7944,8 +7946,9 @@ MonoBehaviour:
   zigzagFrequency: 1
   attackSpeed: 6
   minAttackDelay: 2
-  maxAttackDelay: 5
+  maxAttackDelay: 7
   respawnTime: 10
+  maxDistanceFromStart: 20
 --- !u!70 &981412946
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -8051,7 +8054,7 @@ Transform:
   m_GameObject: {fileID: 981412942}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 76.9, y: 14.4, z: 0}
+  m_LocalPosition: {x: 61.3, y: 14.4, z: 0}
   m_LocalScale: {x: 2.7265627, y: 2.7265627, z: 2.7265627}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -9222,8 +9225,9 @@ MonoBehaviour:
   zigzagFrequency: 1
   attackSpeed: 6
   minAttackDelay: 2
-  maxAttackDelay: 5
+  maxAttackDelay: 7
   respawnTime: 10
+  maxDistanceFromStart: 20
 --- !u!70 &1119403012
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -11642,8 +11646,9 @@ MonoBehaviour:
   zigzagFrequency: 1
   attackSpeed: 6
   minAttackDelay: 2
-  maxAttackDelay: 5
+  maxAttackDelay: 7
   respawnTime: 10
+  maxDistanceFromStart: 20
 --- !u!70 &1402961462
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
