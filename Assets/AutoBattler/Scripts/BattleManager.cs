@@ -48,12 +48,15 @@ public class BattleManager : MonoBehaviour
     {
         for(int i = 0; i < DataManagerAutoBattler.playerUnits.Count; i++)
         {
-            UnitData data = DataManagerAutoBattler.playerUnits[i];
-            Transform parent = playerUnitsParent[i];
-            GameObject unitObj = Instantiate(unitPrefab, parent);
-            Unit unit = unitObj.GetComponent<Unit>();
-            unit.Initialize(data);
-            playerUnits.Add(unit);
+            if(DataManagerAutoBattler.playerUnits[i] != null)
+            {
+                UnitData data = DataManagerAutoBattler.playerUnits[i];
+                Transform parent = playerUnitsParent[i];
+                GameObject unitObj = Instantiate(unitPrefab, parent);
+                Unit unit = unitObj.GetComponent<Unit>();
+                unit.Initialize(data);
+                playerUnits.Add(unit);
+            }
         }
         
     }
