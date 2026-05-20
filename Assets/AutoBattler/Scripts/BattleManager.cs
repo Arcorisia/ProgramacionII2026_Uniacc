@@ -17,7 +17,7 @@ public class BattleManager : MonoBehaviour
 {
     public static BattleManager Instance { get; private set; }
 
-    public List<UnitData> playerUnitDataList = new List<UnitData>();
+    //public List<UnitData> playerUnitDataList = new List<UnitData>();
     //public List<UnitData> enemyUnitDataList = new List<UnitData>();
     public List<Transform> playerUnitsParent = new List<Transform>();
     public List<Transform> enemyUnitsParent = new List<Transform>();
@@ -46,9 +46,9 @@ public class BattleManager : MonoBehaviour
     
     public void GeneratePlayerUnits()
     {
-        for(int i = 0; i < playerUnitDataList.Count; i++)
+        for(int i = 0; i < DataManagerAutoBattler.playerUnits.Count; i++)
         {
-            UnitData data = playerUnitDataList[i];
+            UnitData data = DataManagerAutoBattler.playerUnits[i];
             Transform parent = playerUnitsParent[i];
             GameObject unitObj = Instantiate(unitPrefab, parent);
             Unit unit = unitObj.GetComponent<Unit>();
