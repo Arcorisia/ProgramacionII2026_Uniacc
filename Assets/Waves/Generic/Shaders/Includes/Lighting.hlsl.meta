@@ -13,5 +13,5 @@ AssetOrigin:
   productId: 231779
   packageName: Space Cloud Waves
   packageVersion: 1.0
-  assetPath: Assets/ShadowVision/Generic/Shaders/Includes/Lighting.hlsl
+  assetPath: Assets/Waves/Generic/Shaders/Includes/Lighting.hlsl
   uploadId: 531523
