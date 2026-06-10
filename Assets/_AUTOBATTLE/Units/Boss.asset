@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UnitData
   unitType: 0
   unitName: Boss
-  maxHealth: 35
-  attackDamage: 10
+  maxHealth: 40
+  attackDamage: 9
   defense: 2
   speed: 0.3
   isPlayerUnit: 0
