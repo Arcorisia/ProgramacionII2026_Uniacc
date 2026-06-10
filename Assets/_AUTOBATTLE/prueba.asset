@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cd2f1197c81318499bace127d9a8da7, type: 3}
   m_Name: prueba
   m_EditorClassIdentifier: Assembly-CSharp::TextEvento
-  nameEvent: 1
-  textToDisplay: lkasjdlsajldjsaljdlsajdlsajlaskjdlasjdl
+  nameEvent: La conquista
+  textToDisplay: Comienza la batalla!

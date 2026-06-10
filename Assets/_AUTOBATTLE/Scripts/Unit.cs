@@ -67,37 +67,75 @@ public class Unit : MonoBehaviour
     public void TakeDamage(float damage)
     {
         float effectiveDamage;
-        GameObject damageTextObj = Instantiate(BattleManager.Instance.damageTextPrefab, 
-            transform.position + new Vector3(0,2,0), Quaternion.identity);
-        TextMeshPro damageText = damageTextObj.GetComponent<TextMeshPro>();
-        damageTextObj.transform.DOJump(damageTextObj.transform.position, 1f, 1, 0.5f).
-            SetEase(Ease.OutQuad).OnComplete(() =>
+        TMP_Text damageText = null;
+        GameObject damageTextObj = null;
+
+        if (BattleManager.Instance != null && BattleManager.Instance.damageTextPrefab != null)
         {
-            Destroy(damageTextObj);
-        });
+            damageTextObj = Instantiate(BattleManager.Instance.damageTextPrefab,
+                transform.position + new Vector3(0, 2, 0), Quaternion.identity);
+            damageText = damageTextObj.GetComponentInChildren<TMP_Text>(true);
+
+            if (damageTextObj != null)
+            {
+                damageTextObj.transform.DOJump(damageTextObj.transform.position, 1f, 1, 0.5f).
+                    SetEase(Ease.OutQuad).OnComplete(() =>
+                {
+                    Destroy(damageTextObj);
+                });
+            }
+        }
+        else
+        {
+            Debug.LogError("Unit: BattleManager.damageTextPrefab no esta asignado. Asigna un prefab de texto de dano en BattleManager.");
+        }
+
+        if (damageTextObj != null && damageText == null)
+        {
+            Debug.LogError($"Unit: El Damage Text Prefab '{damageTextObj.name}' no tiene componente TMP_Text/TextMeshPro ni en la raiz ni en hijos.");
+        }
+
         if(damage >= 0)
         {
             effectiveDamage = Mathf.Max(damage - defense, 0);           
-            damageText.text = effectiveDamage.ToString("0");
-            damageText.color = Color.red;
+            if (damageText != null)
+            {
+                damageText.text = effectiveDamage.ToString("0");
+                damageText.color = Color.red;
+            }
         }
         else
         {
             effectiveDamage = damage; // Healing is not reduced by defense
-            damageText.text = effectiveDamage.ToString("0");
-            damageText.color = Color.green;
+            if (damageText != null)
+            {
+                damageText.text = effectiveDamage.ToString("0");
+                damageText.color = Color.green;
+            }
         }
 
         
-        healthBarFill.fillAmount = (currentHealth - effectiveDamage) / maxHealth;        
+        if (healthBarFill != null)
+        {
+            healthBarFill.fillAmount = (currentHealth - effectiveDamage) / maxHealth;
+        }
+        else
+        {
+            Debug.LogError($"Unit: healthBarFill no esta asignado en '{name}'. Asigna la imagen Fill de la barra de vida en el prefab BattleUnit.");
+        }
+
         currentHealth -= effectiveDamage;
+
         if (currentHealth <= 0)
         {
             Die();
         }
         else
         {
-            damageTween.Restart();
+            if (damageTween != null)
+            {
+                damageTween.Restart();
+            }
         }
     }
     void Die()

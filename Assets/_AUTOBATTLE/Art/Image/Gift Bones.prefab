@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3013774809610591180}
   - component: {fileID: 3655248296657703014}
   m_Layer: 0
-  m_Name: Gift Fire
+  m_Name: Gift Bones
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -83,7 +83,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 43cf3ca508622e742aa9934b2005d225, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9423c349256771a4ab63960b2fc866b9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -107,7 +107,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DragAndDrop
   isOverDropZone: 0
   currentDropZone: {fileID: 0}
-  unitData: {fileID: 11400000, guid: 4b12bdbbbb76e914aad5d720a21cf7e7, type: 2}
+  unitData: {fileID: 11400000, guid: adc6bda07980a0c489d24a9c455a9050, type: 2}
 --- !u!65 &3655248296657703014
 BoxCollider:
   m_ObjectHideFlags: 0

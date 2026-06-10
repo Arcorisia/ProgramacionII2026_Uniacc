@@ -107,7 +107,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DragAndDrop
   isOverDropZone: 0
   currentDropZone: {fileID: 0}
-  unitData: {fileID: 11400000, guid: 39ce8f4610ea7e3479333521c86bc195, type: 2}
+  unitData: {fileID: 11400000, guid: c84e70b422ae7d94eb7352867783b679, type: 2}
 --- !u!65 &-2625003438248727341
 BoxCollider:
   m_ObjectHideFlags: 0

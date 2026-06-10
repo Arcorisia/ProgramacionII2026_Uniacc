@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public enum UnitType
 {
@@ -28,13 +30,35 @@ public class BattleManager : MonoBehaviour
     public List<Unit> turnOrder = new List<Unit>();
 
     public GameObject damageTextPrefab;
+
+    [Header("Battle End")]
+    [SerializeField] private Button returnToPreviousSceneButton;
+    [SerializeField] private float returnButtonDelay = 2f;
+
+    private bool battleStarted;
+    private bool battleEnded;
+    private Coroutine showReturnButtonCoroutine;
     
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
-        }        
+        }
+
+        ConfigureReturnButton();
+    }
+
+    private void ConfigureReturnButton()
+    {
+        if (returnToPreviousSceneButton == null)
+        {
+            return;
+        }
+
+        returnToPreviousSceneButton.gameObject.SetActive(false);
+        returnToPreviousSceneButton.onClick.RemoveListener(LoadPreviousScene);
+        returnToPreviousSceneButton.onClick.AddListener(LoadPreviousScene);
     }
     private void SortTurnOrder()
     {
@@ -43,9 +67,60 @@ public class BattleManager : MonoBehaviour
         turnOrder.AddRange(enemyUnits);
         turnOrder.Sort((a, b) => b.speed.CompareTo(a.speed));
     }
+
+    private bool ValidateUnitPrefab()
+    {
+        if (unitPrefab == null)
+        {
+            Debug.LogError("BattleManager: unitPrefab is not assigned. Assign the unit prefab in the inspector.");
+            return false;
+        }
+
+        Unit rootUnit = unitPrefab.GetComponent<Unit>();
+        if (rootUnit != null)
+        {
+            return true;
+        }
+
+        Unit childUnit = unitPrefab.GetComponentInChildren<Unit>(true);
+        if (childUnit != null)
+        {
+            Debug.LogWarning($"BattleManager: unitPrefab '{unitPrefab.name}' no tiene Unit en la raiz, pero si en un hijo '{childUnit.name}'. Se usara ese componente. Recomendado: dejar Unit en la raiz del prefab contenedor.");
+            return true;
+        }
+
+        Debug.LogError($"BattleManager: unitPrefab '{unitPrefab.name}' no contiene ningun componente Unit ni en la raiz ni en hijos. Asigna un prefab contenedor de combate que tenga Unit.cs.");
+        return false;
+    }
+
+    private Unit GetUnitComponentFromInstance(GameObject unitObj, string context)
+    {
+        if (unitObj == null)
+        {
+            Debug.LogError($"BattleManager: {context} no tiene GameObject instanciado.");
+            return null;
+        }
+
+        Unit unit = unitObj.GetComponent<Unit>();
+        if (unit != null)
+        {
+            return unit;
+        }
+
+        unit = unitObj.GetComponentInChildren<Unit>(true);
+        if (unit != null)
+        {
+            Debug.LogWarning($"BattleManager: {context} encontro Unit en un hijo '{unit.name}' del prefab instanciado '{unitObj.name}'. Funciona, pero es mas estable poner Unit en la raiz del prefab contenedor.");
+            return unit;
+        }
+
+        Debug.LogError($"BattleManager: {context} el prefab instanciado '{unitObj.name}' no contiene componente Unit ni en la raiz ni en hijos.");
+        return null;
+    }
     
     public void GeneratePlayerUnits()
     {
+        Debug.Log("BattleManager: GeneratePlayerUnits() iniciado.");
         playerUnits.Clear();
 
         if (playerUnitsParent == null || playerUnitsParent.Count == 0)
@@ -60,6 +135,8 @@ public class BattleManager : MonoBehaviour
             Debug.LogWarning("BattleManager: DataManagerAutoBattler.playerUnits was null and was recreated.");
         }
 
+        Debug.Log($"BattleManager: playerUnitsParent asignados: {playerUnitsParent.Count}. UnitData recibidos: {DataManagerAutoBattler.playerUnits.Count}.");
+
         int count = Mathf.Min(DataManagerAutoBattler.playerUnits.Count, playerUnitsParent.Count);
         if (count == 0)
         {
@@ -67,55 +144,92 @@ public class BattleManager : MonoBehaviour
             return;
         }
 
-        if (unitPrefab == null)
+        if (!ValidateUnitPrefab())
         {
-            Debug.LogError("BattleManager: unitPrefab is not assigned. Assign the unit prefab in the inspector.");
             return;
         }
 
         for (int i = 0; i < count; i++)
         {
-            if (DataManagerAutoBattler.playerUnits[i] != null)
+            UnitData data = DataManagerAutoBattler.playerUnits[i];
+
+            if (data == null)
             {
-                UnitData data = DataManagerAutoBattler.playerUnits[i];
-                Transform parent = playerUnitsParent[i];
-
-                if (parent == null)
-                {
-                    Debug.LogError($"BattleManager: playerUnitsParent[{i}] is null. Assign all parent transforms in the inspector.");
-                    continue;
-                }
-
-                GameObject unitObj = Instantiate(unitPrefab, parent);
-                if (unitObj == null)
-                {
-                    Debug.LogError("BattleManager: Failed to instantiate unit prefab.");
-                    continue;
-                }
-
-                Unit unit = unitObj.GetComponent<Unit>();
-                if (unit == null)
-                {
-                    Debug.LogError("BattleManager: unitPrefab does not contain a Unit component.");
-                    Destroy(unitObj);
-                    continue;
-                }
-
-                unit.Initialize(data);
-                playerUnits.Add(unit);
+                Debug.LogWarning($"BattleManager: Aliado slot {i} trae UnitData NULL. Se saltara este slot.");
+                continue;
             }
+
+            Transform parent = playerUnitsParent[i];
+            string unitModelPrefabName = data.unitPrefab != null ? data.unitPrefab.name : "NULL";
+            string parentName = parent != null ? parent.name : "NULL";
+            Debug.Log($"BattleManager: Preparando aliado slot {i}. UnitData '{data.unitName}' ({data.name}), unitPrefab: {unitModelPrefabName}, parent: {parentName}.");
+
+            if (data.unitPrefab == null)
+            {
+                Debug.LogWarning($"BattleManager: Aliado slot {i} tiene UnitData '{data.name}', pero UnitData.unitPrefab esta NULL. Se instanciara el contenedor Unit, pero no tendra modelo interno.");
+            }
+
+            if (parent == null)
+            {
+                Debug.LogError($"BattleManager: playerUnitsParent[{i}] is null. Assign all parent transforms in the inspector.");
+                continue;
+            }
+
+            GameObject unitObj = Instantiate(unitPrefab, parent);
+            if (unitObj == null)
+            {
+                Debug.LogError($"BattleManager: Fallo Instantiate del contenedor unitPrefab para aliado slot {i}.");
+                continue;
+            }
+
+            Debug.Log($"BattleManager: Contenedor aliado instanciado en slot {i}: '{unitObj.name}'.");
+
+            Unit unit = GetUnitComponentFromInstance(unitObj, $"Aliado slot {i}:");
+            if (unit == null)
+            {
+                Destroy(unitObj);
+                continue;
+            }
+
+            unit.Initialize(data);
+            playerUnits.Add(unit);
+            Debug.Log($"BattleManager: Aliado slot {i} inicializado correctamente. Aliados activos: {playerUnits.Count}.");
         }
 
         if (DataManagerAutoBattler.playerUnits.Count > playerUnitsParent.Count)
         {
             Debug.LogWarning($"BattleManager: playerUnits list has {DataManagerAutoBattler.playerUnits.Count} entries but only {playerUnitsParent.Count} parent slots are assigned. Some units were skipped.");
         }
+
+        Debug.Log($"BattleManager: GeneratePlayerUnits() terminado. Total aliados instanciados: {playerUnits.Count}.");
     }
     public void StartBattle(CombatEvent combatEvent)
     {
-        //GeneratePlayerUnits();
+        battleStarted = false;
+        battleEnded = false;
+        HideReturnButton();
+
+        string combatEventName = combatEvent != null ? combatEvent.name : "NULL";
+        int enemyDataCount = combatEvent != null && combatEvent.enemyUnitsData != null ? combatEvent.enemyUnitsData.Count : 0;
+        Debug.Log($"BattleManager: StartBattle() iniciado. CombatEvent: {combatEventName}. Enemy UnitData recibidos: {enemyDataCount}. Aliados actuales: {playerUnits.Count}.");
+
+        if (playerUnits.Count == 0)
+        {
+            Debug.LogWarning("BattleManager: StartBattle detecto 0 aliados activos. Intentando GeneratePlayerUnits() automaticamente antes de iniciar el combate.");
+            GeneratePlayerUnits();
+            Debug.Log($"BattleManager: Regeneracion automatica terminada. Aliados actuales: {playerUnits.Count}.");
+        }
+
+        if (combatEvent == null)
+        {
+            Debug.LogError("BattleManager: StartBattle recibio CombatEvent NULL. No se puede generar enemigos.");
+            return;
+        }
+
         GenerateEnemyUnits(combatEvent.enemyUnitsData);
+        battleStarted = true;
         SortTurnOrder();
+        Debug.Log($"BattleManager: Orden de turnos generado. Aliados: {playerUnits.Count}, enemigos: {enemyUnits.Count}, turnos: {turnOrder.Count}.");
         BattleLoop();
     }
     public void ContinueBattle()
@@ -125,6 +239,8 @@ public class BattleManager : MonoBehaviour
     }
     public void GenerateEnemyUnits(List<UnitData> enemyUnitDataList)
     {
+        int receivedCount = enemyUnitDataList != null ? enemyUnitDataList.Count : 0;
+        Debug.Log($"BattleManager: GenerateEnemyUnits() iniciado. UnitData enemigos recibidos: {receivedCount}.");
         enemyUnits.Clear();
 
         if (enemyUnitDataList == null || enemyUnitDataList.Count == 0)
@@ -139,11 +255,12 @@ public class BattleManager : MonoBehaviour
             return;
         }
 
-        if (unitPrefab == null)
+        if (!ValidateUnitPrefab())
         {
-            Debug.LogError("BattleManager: unitPrefab is not assigned. Assign the unit prefab in the inspector.");
             return;
         }
+
+        Debug.Log($"BattleManager: enemyUnitsParent asignados: {enemyUnitsParent.Count}.");
 
         int count = Mathf.Min(enemyUnitDataList.Count, enemyUnitsParent.Count);
         if (count == 0)
@@ -162,6 +279,14 @@ public class BattleManager : MonoBehaviour
 
             UnitData data = enemyUnitDataList[i];
             Transform parent = enemyUnitsParent[i];
+            string unitModelPrefabName = data.unitPrefab != null ? data.unitPrefab.name : "NULL";
+            string parentName = parent != null ? parent.name : "NULL";
+            Debug.Log($"BattleManager: Preparando enemigo slot {i}. UnitData '{data.unitName}' ({data.name}), unitPrefab: {unitModelPrefabName}, parent: {parentName}.");
+
+            if (data.unitPrefab == null)
+            {
+                Debug.LogWarning($"BattleManager: Enemigo slot {i} tiene UnitData '{data.name}', pero UnitData.unitPrefab esta NULL. Se instanciara el contenedor Unit, pero no tendra modelo interno.");
+            }
 
             if (parent == null)
             {
@@ -172,31 +297,37 @@ public class BattleManager : MonoBehaviour
             GameObject unitObj = Instantiate(unitPrefab, parent);
             if (unitObj == null)
             {
-                Debug.LogError("BattleManager: Failed to instantiate enemy unit prefab.");
+                Debug.LogError($"BattleManager: Fallo Instantiate del contenedor unitPrefab para enemigo slot {i}.");
                 continue;
             }
 
-            Unit unit = unitObj.GetComponent<Unit>();
+            Debug.Log($"BattleManager: Contenedor enemigo instanciado en slot {i}: '{unitObj.name}'.");
+
+            Unit unit = GetUnitComponentFromInstance(unitObj, $"Enemigo slot {i}:");
             if (unit == null)
             {
-                Debug.LogError("BattleManager: unitPrefab does not contain a Unit component.");
                 Destroy(unitObj);
                 continue;
             }
 
             unit.Initialize(data);
             enemyUnits.Add(unit);
+            Debug.Log($"BattleManager: Enemigo slot {i} inicializado correctamente. Enemigos activos: {enemyUnits.Count}.");
         }
 
         if (enemyUnitDataList.Count > enemyUnitsParent.Count)
         {
             Debug.LogWarning($"BattleManager: enemy unit data list has {enemyUnitDataList.Count} entries but only {enemyUnitsParent.Count} parent slots are assigned. Some units were skipped.");
         }
+
+        Debug.Log($"BattleManager: GenerateEnemyUnits() terminado. Total enemigos instanciados: {enemyUnits.Count}.");
     }
 
 
     public void BattleLoop()
     {
+        RemoveNullUnits();
+
         if(playerUnits.Count > 0 && enemyUnits.Count > 0 )
         {
             if(turnOrder.Count > 0)
@@ -219,10 +350,75 @@ public class BattleManager : MonoBehaviour
             {
                 Debug.Log("Player Victorious!");
                 Debug.Log("Player Wins!");
-                DungeonManager.Instance.ContinueDungeon();
-                return;
             }
+
+            TryShowReturnButtonAfterBattle();
         }
+    }
+
+    private void TryShowReturnButtonAfterBattle()
+    {
+        if (!battleStarted || battleEnded)
+        {
+            return;
+        }
+
+        battleEnded = true;
+
+        if (showReturnButtonCoroutine != null)
+        {
+            StopCoroutine(showReturnButtonCoroutine);
+        }
+
+        showReturnButtonCoroutine = StartCoroutine(ShowReturnButtonAfterDelay());
+    }
+
+    private System.Collections.IEnumerator ShowReturnButtonAfterDelay()
+    {
+        yield return new WaitForSeconds(returnButtonDelay);
+
+        if (returnToPreviousSceneButton != null)
+        {
+            returnToPreviousSceneButton.gameObject.SetActive(true);
+        }
+        else
+        {
+            Debug.LogWarning("BattleManager: returnToPreviousSceneButton no esta asignado en el inspector.");
+        }
+    }
+
+    private void HideReturnButton()
+    {
+        if (showReturnButtonCoroutine != null)
+        {
+            StopCoroutine(showReturnButtonCoroutine);
+            showReturnButtonCoroutine = null;
+        }
+
+        if (returnToPreviousSceneButton != null)
+        {
+            returnToPreviousSceneButton.gameObject.SetActive(false);
+        }
+    }
+
+    private void LoadPreviousScene()
+    {
+        int previousSceneIndex = SceneManager.GetActiveScene().buildIndex - 1;
+
+        if (previousSceneIndex < 0)
+        {
+            Debug.LogWarning("BattleManager: No existe una escena anterior en Build Settings.");
+            return;
+        }
+
+        SceneManager.LoadScene(previousSceneIndex);
+    }
+
+    private void RemoveNullUnits()
+    {
+        playerUnits.RemoveAll(unit => unit == null);
+        enemyUnits.RemoveAll(unit => unit == null);
+        turnOrder.RemoveAll(unit => unit == null);
     }
     void ProcessTurn()
     {

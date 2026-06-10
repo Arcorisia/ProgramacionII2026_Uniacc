@@ -17,9 +17,12 @@ public class SelectorManager : MonoBehaviour
     }
     public void Select()
     {
+        Debug.Log($"SelectorManager: Select() iniciado. DropZones registradas: {dragAndDropUnits.Count}");
+
         if (DataManagerAutoBattler.playerUnits == null)
         {
             DataManagerAutoBattler.playerUnits = new List<UnitData>(4);
+            Debug.LogWarning("SelectorManager: DataManagerAutoBattler.playerUnits estaba null. Se creo una lista nueva.");
         }
 
         DataManagerAutoBattler.playerUnits.Clear();
@@ -27,19 +30,42 @@ public class SelectorManager : MonoBehaviour
 
         for (int i = 0; i < dragAndDropUnits.Count; i++)
         {
-            if (dragAndDropUnits[i].currentUnit != null)
+            PosBattlerDropZone dropZone = dragAndDropUnits[i];
+
+            if (dropZone == null)
             {
-                DataManagerAutoBattler.playerUnits.Add(dragAndDropUnits[i].currentUnit.unitData);
-                selectedUnitsData.Add(dragAndDropUnits[i].currentUnit.unitData);
+                Debug.LogWarning($"SelectorManager: Slot {i} no tiene PosBattlerDropZone asignado en el inspector. Se guardara null.");
+                DataManagerAutoBattler.playerUnits.Add(null);
+                selectedUnitsData.Add(null);
+                continue;
+            }
+
+            if (dropZone.currentUnit != null)
+            {
+                UnitData unitData = dropZone.currentUnit.unitData;
+                DataManagerAutoBattler.playerUnits.Add(unitData);
+                selectedUnitsData.Add(unitData);
+
+                if (unitData == null)
+                {
+                    Debug.LogWarning($"SelectorManager: Slot {i} esta ocupado por '{dropZone.currentUnit.name}', pero su DragAndDrop.unitData esta NULL. BattleManager no podra instanciar esta unidad.");
+                }
+                else
+                {
+                    string prefabName = unitData.unitPrefab != null ? unitData.unitPrefab.name : "NULL";
+                    Debug.Log($"SelectorManager: Slot {i} agrego UnitData '{unitData.unitName}' ({unitData.name}). unitPrefab: {prefabName}");
+                }
             }
             else
             {
                 DataManagerAutoBattler.playerUnits.Add(null);
                 selectedUnitsData.Add(null);
+                Debug.Log($"SelectorManager: Slot {i} vacio. Se guardo null.");
             }
         }
 
-        SceneManager.LoadScene(2);
+        Debug.Log($"SelectorManager: Se guardaron {DataManagerAutoBattler.playerUnits.Count} entradas en DataManagerAutoBattler.playerUnits. Cargando escena 1.");
+        SceneManager.LoadScene(1);
     }
     
 }
