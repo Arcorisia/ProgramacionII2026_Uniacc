@@ -21,5 +21,8 @@ EditorBuildSettings:
     path: Assets/_AUTOBATTLE/Scene/Level 1 - Duelo de Tarot Altiplanico.unity
     guid: 70d21d69efd6f024b9252dc1eea8eeb2
   m_configObjects:
+    com.unity.adaptivePerformance.basic.provider_settings: {fileID: 11400000, guid: e3d2eee33bf852348a86864d05a4e75a, type: 2}
+    com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: e139daa259182ea4287aac0fbdbf6efa, type: 2}
+    com.unity.adaptiveperformance.simulator.provider_settings: {fileID: 11400000, guid: e7b55c1e8d276f2449d0b2e5c90931bd, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
