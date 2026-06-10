@@ -39,7 +39,7 @@ public class SelectorManager : MonoBehaviour
             }
         }
 
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(2);
     }
     
 }
